@@ -1,0 +1,38 @@
+<div class="container">
+    <footer class="pt-4 my-md-5 pt-md-5 border-top">
+        <div class="row">
+            <div class="col-12 col-md">
+                SkyService
+                <small class="d-block mb-3 text-muted">&copy; 2023</small>
+            </div>
+            <div class="col-6 col-md">
+                <h5>Категории</h5>
+                <ul class="list-unstyled text-small">
+                    {% if user.is_authenticated %}
+                    <li><a class="text-muted" href="{% url 'mailing:mailing_list' %}">Рассылки</a></li>
+                    <li><a class="text-muted" href="{% url 'mailing:attempt_list' %}">Попытки рассылок</a></li>
+                    <li><a class="text-muted" href="{% url 'clients:clients_list' %}">Клиенты</a></li>
+                    <li><a class="text-muted" href="{% url 'letter:letter_list' %}">Сообщения</a></li>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                    {% if is_manager or is_staff %}
+                        <li><a class="text-muted" href="{% url 'users:users_list' %}">Пользователи</a></li>
+                    {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-6 col-md">
+                <h5>Дополнительно</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted" href="#">Мы пишем</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md">
+                <h5>О нас</h5>
+                <ul class="list-unstyled text-small">
+                    <li><a class="text-muted" href="/contacts/">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</div>
