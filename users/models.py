@@ -5,6 +5,7 @@ from django.db import models
 class CustomUser(AbstractUser):
     username = None
     phone_number = models.CharField(
+        unique=True,
         max_length=15,
         verbose_name="Телефон",
         help_text="Обязательное поле. Введите номер телефона",
