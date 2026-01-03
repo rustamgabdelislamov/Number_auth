@@ -1,18 +1,14 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 class CustomUser(AbstractUser):
     username = None
-    phone_number = models.CharField(
+    phone_number = PhoneNumberField(
         unique=True,
         max_length=15,
         verbose_name="Телефон",
         help_text="Обязательное поле. Введите номер телефона",
-    )
-    is_true = models.BooleanField(
-        default=False,
-        verbose_name="Актуальность номера",
     )
     your_invite = models.CharField(
         max_length=6,
@@ -34,3 +30,16 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = "пользователь"
         verbose_name_plural = "пользователи"
+
+
+class PhoneNumberCodes(models.Model):
+    phone = PhoneNumberField(
+        unique=True,
+        max_length=15,
+        verbose_name="Телефон",
+        help_text="Обязательное поле. Введите номер телефона",
+    )
+    code = models.SmallIntegerField(
+        verbose_name="Код для подтверждения",
+    )
+    is_active = models.BooleanField(default=False)
