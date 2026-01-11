@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Телефон</title>
+    <title>Код</title>
 </head>
 <body>
-    <h1>Введите телефон</h1>
+    <h1>Введите код для номера телефона </h1>
     <form method="post">
         {% csrf_token %}
-        <label for="phone">Номер телефона:</label><br>
-        <input type="tel" id="phone" name="phone" required><br><br>
+        <label for="code">Код:</label><br>
+        <input type="tel" id="code" name="code" required><br><br>
 
         <input type="submit" value="Отправить">
     </form>
