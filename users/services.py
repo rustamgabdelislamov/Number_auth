@@ -48,4 +48,5 @@ def get_relevance_number(phone_number, text):
                 "dateSend": 1510656981
             }]
     }
+    print(data)
     return data

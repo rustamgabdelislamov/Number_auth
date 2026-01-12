@@ -15,13 +15,13 @@
     {% for phone in phone_list %}
         <ul>
         {% if user.is_staff %}
-            <!-- item — это CustomUser -->
-            <li>Пользователь: {{ item.phone_number }}</li>
+            <!-- phone — это CustomUser -->
+            <li>Пользователь: {{ phone.phone_number }}</li>
         {% else %}
             <!-- item — это InviteRegistration -->
             <!-- Нам нужен тот, кто зарегистрировался (поле user в модели) -->
-            <li>Приглашенный: Тел: {{ item.user.phone_number }}</li>
-            <li>Дата регистрации: {{ item.created_at|date:"d.m.Y" }}</li>
+            <li>Приглашенный: Тел: {{ phone.user.phone_number }}</li>
+            <li>Дата регистрации: {{ phone.created_at|date:"d.m.Y" }}</li>
         {% endif %}
     </ul>
     {% endfor %}

@@ -4,9 +4,9 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class CustomUser(AbstractUser):
     username = None
-    phone_number = PhoneNumberField(
+    phone_number = models.CharField(
         unique=True,
-        max_length=17,
+        max_length=15,
         verbose_name="Телефон",
         help_text="Обязательное поле. Введите номер телефона",
     )
@@ -33,8 +33,8 @@ class CustomUser(AbstractUser):
 
 
 class PhoneNumberCodes(models.Model):
-    phone = PhoneNumberField(
-        max_length=17,
+    phone = models.CharField(
+        max_length=15,
         verbose_name="Телефон",
         help_text="Обязательное поле. Введите номер телефона",
     )

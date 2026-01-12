@@ -1,7 +1,8 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView
 from users.apps import UsersConfig
-from users.views import PhoneNumberCode, PhoneNumberCodesCode, PhoneNumberSomeoneInvite, PhoneNumberList, logout_view
+from users.views import PhoneNumberCode, PhoneNumberCodesCode, PhoneNumberSomeoneInvite, PhoneNumberList, logout_view, \
+    PhoneNumberCodeAPIView, PhoneNumberCodesCodeAPIView
 
 app_name = UsersConfig.name
 
@@ -12,4 +13,7 @@ urlpatterns = [
     path("phone_number/", PhoneNumberCode.as_view(), name="phone"),
     path("phone_number/code/", PhoneNumberCodesCode.as_view(), name="code"),
     path("phone_number/code/invite/", PhoneNumberSomeoneInvite.as_view(), name="invite"),
-    ]
+    path("api/phone_number/", PhoneNumberCodeAPIView.as_view(), name="api_phone"),
+
+    path("api/phone_number/code/", PhoneNumberCodesCodeAPIView.as_view(), name="api_phone"),
+]
