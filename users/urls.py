@@ -8,8 +8,8 @@ app_name = UsersConfig.name
 urlpatterns = [
     path("login/", LoginView.as_view(template_name='users/login.html'),name='login'),
     path("logout/", logout_view,name='logout'),
-    path("home/", PhoneNumberList.as_view(), name="home"),
-    path("", PhoneNumberCode.as_view(), name="phone"),
+    path("", PhoneNumberList.as_view(), name="home"),
+    path("phone_number/", PhoneNumberCode.as_view(), name="phone"),
     path("phone_number/code/", PhoneNumberCodesCode.as_view(), name="code"),
     path("phone_number/code/invite/", PhoneNumberSomeoneInvite.as_view(), name="invite"),
     ]

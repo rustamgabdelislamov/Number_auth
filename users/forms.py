@@ -1,18 +1,35 @@
-# from django.db.models import BooleanField
-# from django.contrib.auth.forms import UserCreationForm
-# from users.models import CustomUser
-#
-#
-# class StyleFormMixin:
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         for field_name, field in self.fields.items():  # Ключ (field_name) — это строка, обозначающая имя поля («title», «content», «price» и т.п.).Значение (field) — это экземпляр конкретного класса поля, например, CharField, IntegerField, BooleanField и т.д., наследующие от базового класса полей Django.
-#             if isinstance(field, BooleanField):
-#                 field.widget.attrs['class'] = 'form-check-input'
-#             else:
-#                 field.widget.attrs['class'] = 'form-control'
-#
-# class CustomUserCreationForm(StyleFormMixin, UserCreationForm):
-#     class Meta:
-#         model = CustomUser
-#         fields = "__all__"
+import re
+from users.models import CustomUser
+from django import forms
+
+
+class UserRegistrationForm(forms.ModelForm):
+    phone_number = forms.CharField(
+        max_length=17,
+        help_text="Обязательное поле. Введите номер телефона",)
+
+    def clean_phone_number(self):
+        # Получаем данные, введенные пользователем
+        phone_number = self.cleaned_data.get('phone_number')
+        print(phone_number)
+        user_exists = CustomUser.objects.filter(phone_number=phone_number).exists()
+        if user_exists:
+            raise forms.ValidationError("Такой номер уже существует. Пожалуйста, попробуйте снова.")
+
+        # 1. Удаляем все лишние символы: пробелы, скобки, тире, плюсы
+        # phone_number = re.sub(r'\D', '', phone_number)
+
+        # 2. Обработка первой цифры
+        # Если номер начинается с 8, меняем на 7
+        if phone_number.startswith('8'):
+            phone_number = '7' + phone_number[1:]
+
+        # 3. Проверка длины (для РФ номеров это обычно 11 цифр)
+        # if len(phone_number) != 11:
+        #     raise forms.ValidationError("Номер телефона должен состоять из 11 цифр.")
+
+        return phone_number
+
+    class Meta:
+        model = CustomUser
+        fields = ['phone_number']

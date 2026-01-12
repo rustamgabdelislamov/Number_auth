@@ -6,7 +6,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-)n=y7*ty(vckm10i8@5o%!$g9_kcz=__h-o9ft!0stj_tz!4k0'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = True if os.getenv("DEBUG") == "True" else False
 
@@ -112,6 +112,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 AUTH_USER_MODEL = "users.CustomUser"
 
-LOGIN_REDIRECT_URL = ''
+LOGIN_REDIRECT_URL = 'users:home'
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'users:login'

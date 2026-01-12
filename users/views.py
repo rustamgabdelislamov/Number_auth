@@ -3,7 +3,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+
+from users.forms import UserRegistrationForm
 from users.models import CustomUser, PhoneNumberCodes, InviteRegistration
 from users.services import get_relevance_number, generate_invite_code
 from django.contrib import messages
@@ -23,16 +25,25 @@ class PhoneNumberCode(View):
         return render(request, 'users/phone_number.html')
 
     def post(self, request, *args, **kwargs):
-        phone = request.POST.get("phone")
-        request.session['phone_number'] = phone
-        phone_auth = get_relevance_number(phone, code_auth)
-        print("DEBUG",phone)
-        if phone_auth.get("data")[0]["text"] == code_auth:
-            PhoneNumberCodes.objects.create(phone=phone, code=code_auth, is_active=True)
-            return HttpResponseRedirect("phone_number/code/")
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            phone = form.cleaned_data['phone_number']
+            # user_exists = CustomUser.objects.filter(phone_number=phone).exists()
+            # if user_exists:
+            #     messages.error(request, "Такой номер уже существует. Пожалуйста, попробуйте снова.")
+            #     return render(request, 'users/phone_number.html', {'form': form})
+
+            request.session['phone_number'] = phone
+            phone_auth = get_relevance_number(phone, code_auth)
+            if phone_auth.get("data")[0]["text"] == code_auth:
+                PhoneNumberCodes.objects.create(phone=phone, code=code_auth, is_active=True)
+                return HttpResponseRedirect("phone_number/code/")
+            else:
+                messages.error(request, "Что-то пошло не так. Пожалуйста, попробуйте снова.")
+                return render(request, 'users/phone_number.html', {'form': form})
         else:
-            messages.error(request, "Что-то пошло не так. Пожалуйста, попробуйте снова.")
-            return render(request, 'users/phone_number.html')
+            # Если форма не валидна, возвращаем ее с ошибками
+            return render(request, 'users/phone_number.html', {'form': form})
 
 
 class PhoneNumberCodesCode(View):
@@ -46,14 +57,11 @@ class PhoneNumberCodesCode(View):
         attempts = request.session.get('attempts', 0)
         phone_number_codes = PhoneNumberCodes.objects.filter(phone=phone).first()
         your_invite = generate_invite_code()
-        print("DEBUG3",phone_number_codes)
-        print("DEBUG4", phone_number_codes.is_active)
         if attempts < self.MAX_ATTEMPTS:
             if phone_number_codes.code == code:
                 user = CustomUser.objects.filter(phone_number=phone).first()
                 if not user:
                     user = CustomUser.objects.create(phone_number=phone, your_invite=your_invite)
-                    print("DEBUG5", user)
                     user.set_password(code)
                     user.save()
                 phone_number_codes.delete()
@@ -102,20 +110,23 @@ class PhoneNumberList(ListView):
     template_name = 'users/home.html'
     context_object_name = 'phone_list'
 
-    def get_queryset(self):
 
+
+    def get_queryset(self):
         user = self.request.user
 
-        # if not user.is_authenticated:
-        #     # Перенаправление на страницу входа, если пользователь не авторизован
-        #     return HttpResponseRedirect("reverse('users:home')")
-        # is_manager = user.is_authenticated and user.groups.filter(name='manager').exists()
-        queryset = CustomUser.objects.all()
-        return queryset
-        # if is_manager:
-        #     # Модератор видит все рассылки
-        #     return InviteRegistration.objects.all()
-        # else:
-        #     # Обычный пользователь видит только свои рассылки
-        #     return InviteRegistration.objects.filter(invited_user=user)
+        if not user.is_authenticated:
+            # Перенаправляем неаутентифицированных пользователей на страницу входа
+            return HttpResponseRedirect(reverse('users:home'))
+
+        elif user.is_staff:
+            queryset = CustomUser.objects.all()
+            return queryset
+
+
+        else:
+            # Обычный пользователь видит только людей подписанных на него через someone_invite
+            # .select_related('user') добавлена для оптимизации (чтобы не было лишних запросов к БД)
+            return InviteRegistration.objects.filter(invited_user=user).select_related('user')
+
 print(code_auth)
