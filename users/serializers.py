@@ -3,6 +3,7 @@ from rest_framework import serializers
 from users.models import CustomUser, InviteRegistration
 from users.validators import normalize_and_validate_phone
 
+
 class PhoneInputSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
 
@@ -20,4 +21,4 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class InviteRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = InviteRegistration
-        fields = '__all__'  # или перечислите необходимые поля
+        fields = "__all__"  # или перечислите необходимые поля

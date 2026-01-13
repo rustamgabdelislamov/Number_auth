@@ -6,18 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='customuser',
-            name='phone_number',
-            field=models.CharField(help_text='Обязательное поле. Введите номер телефона', max_length=15, unique=True, verbose_name='Телефон'),
+            model_name="customuser",
+            name="phone_number",
+            field=models.CharField(
+                help_text="Обязательное поле. Введите номер телефона",
+                max_length=15,
+                unique=True,
+                verbose_name="Телефон",
+            ),
         ),
         migrations.AlterField(
-            model_name='phonenumbercodes',
-            name='phone',
-            field=models.CharField(help_text='Обязательное поле. Введите номер телефона', max_length=15, verbose_name='Телефон'),
+            model_name="phonenumbercodes",
+            name="phone",
+            field=models.CharField(
+                help_text="Обязательное поле. Введите номер телефона",
+                max_length=15,
+                verbose_name="Телефон",
+            ),
         ),
     ]

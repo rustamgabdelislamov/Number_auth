@@ -11,13 +11,13 @@ def normalize_and_validate_phone(value, check_exists=False):
     3. (Опционально) Проверяет наличие в базе.
     """
     # Очистка от мусора
-    phone = re.sub(r'\D', '', value)
+    phone = re.sub(r"\D", "", value)
 
-    if phone.startswith('8'):
-        phone = '7' + phone[1:]
+    if phone.startswith("8"):
+        phone = "7" + phone[1:]
 
     # Базовая валидация
-    if not phone.startswith('7'):
+    if not phone.startswith("7"):
         raise ValidationError("Номер должен начинаться с 7 или 8.")
 
     if len(phone) != 11:

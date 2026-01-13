@@ -8,6 +8,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_filter = ("phone_number",)
     search_fields = ("phone_number",)
 
+
 # @admin.register(InviteRegistration)
 # class InviteRegistrationAdmin(admin.ModelAdmin):
 #     list_display = ("phone_number", "id")
