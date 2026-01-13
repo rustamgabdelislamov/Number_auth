@@ -6,17 +6,14 @@ pip install poetry
 poetry shell
 3. Установите зависимости
 poetry install
-4. Клонируйте репозиторий git clone git@github.com:rustamgabdelislamov/home_work_30.git
-5. Сгенерируй SSH ключ и загрузи его в SSH keys , также сгенерируй SSH ключ для nginx на сервере
-ssh-keygen -t ed25519 -C "your@email"
-6. Создайте в секретах  на GIT HUB 
-DEPLOY_DIR
-DOCKER_HUB_ACCESS_TOKEN
-DOCKER_HUB_USERNAME
-SECRET_KEY
-SERVER_IP
-SSH_KEY
-SSH_USER
-7.Сделайте commit и push в репозиторий и сервер развернется сам
+4. Клонируйте репозиторий git@github.com:rustamgabdelislamov/Number_auth.git
+5. Выполните команды
+python manage.py csu
+python manage.py add_user
+6. Запустите Docker Desktop
+5. Соберите контейнер 
+docker-compose up -d
+6. Войдите в браузер http://127.0.0.1:8000/ и подтверждайте свой номер
+7. Для Postmana есть коллекция в которой все запросы подписаны и есть тело запросов
 
 

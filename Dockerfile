@@ -21,7 +21,6 @@ RUN pip install gunicorn
 # Устанавливаем зависимости проекта без создания виртуального окружения
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root -v
-RUN gunicorn --version
 # Копируем остальные файлы проекта в контейнер
 COPY . .
 

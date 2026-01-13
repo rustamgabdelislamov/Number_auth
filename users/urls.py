@@ -37,7 +37,7 @@ urlpatterns = [
     path(
         "api/phone_number/code/invite/",
         PhoneNumberSomeoneInviteAPI.as_view(),
-        name="api_code",
+        name="api_invite",
     ),
     path("api/", PhoneNumberListAPI.as_view(), name="api_home"),
     path(
