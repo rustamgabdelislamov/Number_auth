@@ -64,4 +64,4 @@ class InviteRegistration(models.Model):
         verbose_name_plural = "Регистрации по инвайт кодам"
 
     def __str__(self):
-        return f"{self.user} зарегистрирован по коду {self.someone_invite} пользователя {self.invited_user.phone_number}"
+        return f"{self.user} зарегистрирован {self.someone_invite} пользователя {self.invited_user.phone_number}"

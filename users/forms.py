@@ -1,4 +1,3 @@
-import re
 from users.models import CustomUser
 from django import forms
 

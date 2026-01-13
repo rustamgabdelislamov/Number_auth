@@ -1,10 +1,9 @@
-
 from django.core.management import call_command
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APITestCase
 from django.urls import reverse
-from users.models import CustomUser, InviteRegistration, PhoneNumberCodes
+from users.models import CustomUser, InviteRegistration
 from django.core.exceptions import ValidationError
 from unittest.mock import patch, Mock
 from users.services import generate_invite_code, get_relevance_number
@@ -94,32 +93,43 @@ class UserViewSetTests(APITestCase):
     def test_invalid_starting_digit(self):
         with self.assertRaises(ValidationError) as context:
             normalize_and_validate_phone("60001234567")
-        self.assertEqual(str(context.exception.args[0]), "Номер должен начинаться с 7 или 8.")
+        self.assertEqual(
+            str(context.exception.args[0]), "Номер должен начинаться с 7 или 8."
+        )
 
     def test_invalid_length(self):
         with self.assertRaises(ValidationError) as context:
             normalize_and_validate_phone("8900123456")  # 10 цифр
-        self.assertEqual(str(context.exception.args[0]), "Номер должен содержать 11 цифр.")
+        self.assertEqual(
+            str(context.exception.args[0]), "Номер должен содержать 11 цифр."
+        )
 
         with self.assertRaises(ValidationError) as context:
             normalize_and_validate_phone("890012345678")  # 12 цифр
-        self.assertEqual(str(context.exception.args[0]), "Номер должен содержать 11 цифр.")
+        self.assertEqual(
+            str(context.exception.args[0]), "Номер должен содержать 11 цифр."
+        )
 
     def test_existing_phone_number(self):
         with self.assertRaises(ValidationError) as context:
             normalize_and_validate_phone("79871371048", check_exists=True)
-        self.assertEqual(str(context.exception.args[0]), "Этот номер уже зарегистрирован.")
+        self.assertEqual(
+            str(context.exception.args[0]), "Этот номер уже зарегистрирован."
+        )
 
     def test_non_existing_phone_number(self):
-        self.assertEqual(normalize_and_validate_phone("89001234567", check_exists=True), "79001234567")
+        self.assertEqual(
+            normalize_and_validate_phone("89001234567", check_exists=True),
+            "79001234567",
+        )
 
     def test_invite_code_length(self):
         """Проверка длины инвайт-кода"""
         code = generate_invite_code(6)
         self.assertEqual(len(code), 6)
 
-    @patch('requests.get')
-    @patch('builtins.print')  # Перехват вывода print
+    @patch("requests.get")
+    @patch("builtins.print")  # Перехват вывода print
     def test_successful_response(self, mock_print, mock_get):
         """Проверка успешного ответа от API"""
         mock_response = Mock()
@@ -131,10 +141,12 @@ class UserViewSetTests(APITestCase):
 
         self.assertEqual(result, {"success": True})
         mock_get.assert_called_once()
-        mock_print.assert_called_with("Сообщение успешно отправлено!")  # Проверка вывода
+        mock_print.assert_called_with(
+            "Сообщение успешно отправлено!"
+        )  # Проверка вывода
 
-    @patch('requests.get')
-    @patch('builtins.print')  # Перехват вывода print
+    @patch("requests.get")
+    @patch("builtins.print")  # Перехват вывода print
     def test_error_response(self, mock_print, mock_get):
         """Проверка обработки ошибки от API"""
         mock_response = Mock()
@@ -173,7 +185,7 @@ class CommandTest(TestCase):
 
     def test_create_users_and_invites(self):
         # Вызов команды управления
-        call_command('add_users')  # Замените 'your_command_name' на имя вашей команды
+        call_command("add_users")  # Замените 'your_command_name' на имя вашей команды
 
         # Проверка, что пользователи созданы
         users = CustomUser.objects.all()
@@ -181,8 +193,8 @@ class CommandTest(TestCase):
 
         # Проверка, что пользователи созданы с правильными данными
         for user_data in self.users_data:
-            user = CustomUser.objects.get(phone_number=user_data['phone_number'])
-            self.assertEqual(user.your_invite, user_data['your_invite'])
+            user = CustomUser.objects.get(phone_number=user_data["phone_number"])
+            self.assertEqual(user.your_invite, user_data["your_invite"])
 
         # Проверка, что реферальные ссылки зарегистрированы
         invites = InviteRegistration.objects.all()

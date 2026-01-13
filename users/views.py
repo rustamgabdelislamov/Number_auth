@@ -179,7 +179,8 @@ class PhoneNumberCodeAPIView(APIView):
 
 
 class PhoneNumberCodesCodeAPIView(APIView):
-    """API Класс получения кода от пользователя и сравнения кода из ответа сервиса, если они равны то подтверждаем номер"""
+    """API Класс получения кода от пользователя и сравнения кода из ответа сервиса,
+    если они равны то подтверждаем номер"""
 
     permission_classes = [AllowAny]
 
