@@ -11,6 +11,7 @@
     {% include 'users/includes/inc_menu.html' %}
     {% if user.is_authenticated %}
     <p>Добро пожаловать {{ user.phone_number }}!</p>
+    <p>Твой инвайт-код {{ user.your_invite }}!</p>
     <h1>Всего зарегистрированных пользователей </h1>
     {% for phone in phone_list %}
         <ul>
