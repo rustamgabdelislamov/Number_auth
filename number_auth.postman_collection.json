@@ -175,6 +175,36 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "получаем рефералов с номерами телефона",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY4NDA2MzYwLCJpYXQiOjE3Njg0MDU0NjAsImp0aSI6IjM3YTkyYzU5N2JhYzRhOGM4YzQzMGFjMmFkMzU3NDA3IiwidXNlcl9pZCI6IjMifQ._r1rpk_9bzOFzmYFASUsNwLKEXOXZTVKxXLOo6TFEAg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/profile/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"profile",
+						""
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
