@@ -11,6 +11,9 @@ from users.views import (
     PhoneNumberCodesCodeAPIView,
     PhoneNumberSomeoneInviteAPI,
     PhoneNumberListAPI,
+    AddInviteView,
+    AddInviteAPIView,
+    MyProfileAPIView,
 )
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import (
@@ -30,6 +33,11 @@ urlpatterns = [
     path(
         "phone_number/code/invite/", PhoneNumberSomeoneInvite.as_view(), name="invite"
     ),
+    path(
+        "phone_number/code/invite_update/",
+        AddInviteView.as_view(),
+        name="invite_update",
+    ),
     path("api/phone_number/", PhoneNumberCodeAPIView.as_view(), name="api_phone"),
     path(
         "api/phone_number/code/", PhoneNumberCodesCodeAPIView.as_view(), name="api_code"
@@ -39,7 +47,13 @@ urlpatterns = [
         PhoneNumberSomeoneInviteAPI.as_view(),
         name="api_invite",
     ),
+    path(
+        "api/phone_number/code/invite_update/",
+        AddInviteAPIView.as_view(),
+        name="api_invite_update",
+    ),
     path("api/", PhoneNumberListAPI.as_view(), name="api_home"),
+    path("api/profile/", MyProfileAPIView.as_view(), name="api_profile"),
     path(
         "api/login/",
         TokenObtainPairView.as_view(permission_classes=(AllowAny,)),

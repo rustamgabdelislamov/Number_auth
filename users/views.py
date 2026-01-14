@@ -1,8 +1,8 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import ListView
-from django.urls import reverse
+from django.views.generic import ListView, UpdateView
+from django.urls import reverse, reverse_lazy
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,6 +13,8 @@ from users.serializers import (
     PhoneInputSerializer,
     CustomUserSerializer,
     InviteRegistrationSerializer,
+    UserInviteSerializer,
+    UserDetailSerializer,
 )
 from users.services import get_relevance_number, generate_invite_code
 from django.contrib import messages
@@ -94,18 +96,15 @@ class PhoneNumberSomeoneInvite(View):
     def post(self, request, *args, **kwargs):
         phone = request.session.get("phone_number")
         someone_invite = request.POST.get("someone_invite")
-
         user = CustomUser.objects.get(phone_number=phone)
-        user.someone_invite = someone_invite
-        user.save()
-
         if someone_invite:
             invite_owner = CustomUser.objects.filter(your_invite=someone_invite).first()
-
             if invite_owner:
                 InviteRegistration.objects.create(
                     invited_user=invite_owner, user=user, someone_invite=someone_invite
                 )
+                user.someone_invite = someone_invite
+                user.save()
                 messages.success(request, "Регистрация завершена успешно!")
             else:
                 messages.error(request, "Пользователь не найден.")
@@ -116,6 +115,54 @@ class PhoneNumberSomeoneInvite(View):
         return HttpResponseRedirect(
             reverse("users:home")
         )  # Перенаправление на страницу успеха
+
+
+class AddInviteView(UpdateView):
+    model = CustomUser
+    fields = ["someone_invite"]  # Поле, которое будем редактировать
+    template_name = "users/someone_invite.html"  # Шаблон страницы изменения
+    success_message = "Ваш пригласительный код успешно привязан!"
+    success_url = reverse_lazy(
+        "users:home"
+    )  # Куда переадресовать после успешного обновления
+
+    def get_object(self, queryset=None):
+        """
+        Получаем объект пользователя, которого хотим обновить.
+        """
+        return self.request.user
+
+    def form_valid(self, form):
+        """
+        Действия после успешной отправки формы.
+        """
+        someone_invite = form.cleaned_data["someone_invite"]
+
+        # Поиск владельца инвайта
+        invite_owner = CustomUser.objects.filter(your_invite=someone_invite).first()
+
+        if invite_owner:
+            # Сохраняем пользователя только если нашелся владелец инвайта
+            form.instance.someone_invite = someone_invite
+            form.save()
+
+            # Регистрируем подключение
+            InviteRegistration.objects.create(
+                invited_user=invite_owner,
+                user=self.object,
+                someone_invite=someone_invite,
+            )
+            messages.success(self.request, self.success_message)
+        else:
+            # Информируем пользователя об ошибке и прерываем операцию
+            messages.error(
+                self.request, "Пользователь с данным пригласительным кодом не найден."
+            )
+            return HttpResponseRedirect(
+                reverse("users:invite_update")
+            )  # Возвращаемся назад без сохранения
+
+        return super().form_valid(form)
 
 
 class PhoneNumberList(ListView):
@@ -260,6 +307,24 @@ class PhoneNumberSomeoneInviteAPI(APIView):
             )
 
 
+class AddInviteAPIView(generics.UpdateAPIView):
+    serializer_class = UserInviteSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # Возвращаем текущего пользователя
+        return self.request.user
+
+    def perform_update(self, serializer):
+        # Выполняем стандартное обновление, плюс дополнительную логику для связи владельцев
+        instance = serializer.save()
+        someone_invite = serializer.validated_data["someone_invite"]
+        invite_owner = CustomUser.objects.get(your_invite=someone_invite)
+        InviteRegistration.objects.create(
+            invited_user=invite_owner, user=instance, someone_invite=someone_invite
+        )
+
+
 class PhoneNumberListAPI(generics.ListAPIView):
     """API для вывода информации о пользователях в зависимости от разрешений"""
 
@@ -284,3 +349,13 @@ class PhoneNumberListAPI(generics.ListAPIView):
             return InviteRegistration.objects.filter(invited_user=user).select_related(
                 "user"
             )
+
+
+class MyProfileAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user  # Авторизованный пользователь
+
+        serializer = UserDetailSerializer(user)
+        return Response(serializer.data)
