@@ -31,7 +31,6 @@ def get_relevance_number(phone_number, text):
         return response.json()
     else:
         print(f"Ошибка: {response.status_code} - {response.text}")
-
     # заглушка имитации отправки кода
     # from users.views import code_auth
     # data = {

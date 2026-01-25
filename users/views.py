@@ -110,7 +110,7 @@ class PhoneNumberSomeoneInvite(View):
                 messages.error(request, "Пользователь не найден.")
                 return HttpResponseRedirect(reverse("users:invite"))
         else:
-            messages.warning(request, "Реферальная ссылка не создана")
+            messages.warning(request, "Реферальная ссылка не создана. Номер подтвержден. ")
 
         return HttpResponseRedirect(
             reverse("users:home")
