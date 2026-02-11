@@ -1,0 +1,13 @@
+{% extends 'users/home.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<body>
+    <h1>Введите реферальный код</h1>
+    <form method="post">
+    {% csrf_token %}
+    <p>Ваш инвайт-код будет создан автоматически. Если хотите, вы можете ввести чужой инвайт-код ниже:</p>
+    <input type="text" id="someone_invite" name="someone_invite" placeholder="Инвайт-код (оставьте пустым, если нет)">
+    <button type="submit">Продолжить</button>
+    </form>
+</body>
+{% endblock %}
